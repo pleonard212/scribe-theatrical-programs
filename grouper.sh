@@ -5,7 +5,7 @@
 # First, we set up the Internal Field Separator (IFS) to be a comma, to work with CSVs.
 IFS=','
 # Next, write a header to the groups.csv file (and as a side effect, erase it to start over).
-echo 'key,name,description,cover_image_url,external_url,meta_data_1,meta_data_2,retire_count' > groups.csv
+echo 'key,name,description,cover_image_url,external_url,start_year,stop_year,retire_count' > groups.csv
 # The format of this file is given here: https://github.com/zooniverse/scribeAPI/wiki/Project-Subjects#groups
 # We are using two special metadata fields for first and last year of each box/folder set.
 # meta_data_1 = first year
