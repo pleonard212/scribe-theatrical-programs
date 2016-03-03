@@ -29,7 +29,7 @@ do
 		# this file are shown above in line 8.
         echo 'b'$f1'f'$f2',Box '$f1' Folder '$f2','$f3',b'$f1'f'$f2'.jpg,,'$f4','$f5',99' >> groups.csv
 		# Create the csv file for this particular group of box and folders, for example b1f2-3.csv. 
-        touch 'groups/group_F'$f1'B'$f2'.csv'
+        echo 'file_path,thumbnail,width,height,page_no,set_key' > 'subjects/group_F'$f1'B'$f2'.csv'
         # Now we're ready to parse through each folder in this group and add it its images
         # to its csv file.
         # Set a counter that starts with the first folder in the set.
@@ -46,21 +46,30 @@ do
        		# We'll define programs as any items that start with p0001.tif.
 			# Look for TIF's that match the pattern. Case-insensitive. Build an array.
 			items="$(find /Volumes/DHLabDrobo/DRA37 -iname 'DRA037-S01-b'$PADDEDBOX'-F'$PADDEDFOLDER'-i*-p0001.tif')"
+			# Make sure the scans actually exist.
 			if [ ! -z "$items" ]
 			then
 				for item in "${items[@]}";
 					do 
+						# Get the base filename of the discovered item, discarding the dir.
 						itemfilename=$(basename "$item")
+						# Discard the very last part of the discovered item, 'p00001.tif'.
 						itemsearch="${itemfilename%-*}"
 						echo 'Looking for all pages of '$itemsearch
-						touch items/$itemsearch.csv
+# 						touch subjects/$itemsearch.csv
 						PAGECOUNT=1
 						find /Volumes/DHLabDrobo/DRA37 -iname "$itemsearch*.tif" | while read page; do
-							# TODO convert these mongo tifs into reasonable jpg's.
-							# TODO extract the width and height after we resize.
-							# http://unix.stackexchange.com/questions/75635/shell-command-to-get-pixel-size-of-an-image
+							# Convert these mongo tifs into reasonable jpg's.
+							filename=$(basename "$page" .tif)
+							convert $page -resize 2048x2048\> images/$filename.jpg 
+							# Create thumbnails
+							convert $page -resize 300x300\> thumbs/$filename.jpg 
+							#  extract the width and height after we resize.
+							width=`identify images/$filename.jpg | cut -f 3 -d " " | sed s/x.*//` 
+							height=`identify images/$filename.jpg | cut -f 3 -d " " | sed s/.*x//` 
+							echo 'Dimensions are '$width'x'$height
 							PAGEJPG=$(basename "$page" | cut -d. -f1)
-							echo $PAGECOUNT,$PAGEJPG.jpg,thumbs/$PAGEJPG.jpg,width,height >>  items/$itemsearch.csv
+							echo $PAGEJPG.jpg',thumbs/'$PAGEJPG'.jpg,'$width','$height','$PAGECOUNT','$itemsearch >> 'subjects/group_F'$f1'B'$f2'.csv'
 							PAGECOUNT=$[PAGECOUNT + 1]
 
 						done
