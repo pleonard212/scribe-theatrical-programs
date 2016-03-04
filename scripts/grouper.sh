@@ -29,7 +29,7 @@ do
 		# this file are shown above in line 8.
         echo 'b'$f1'f'$f2',Box '$f1' Folder '$f2','$f3',b'$f1'f'$f2'.jpg,,'$f4','$f5',99' >> groups.csv
 		# Create the csv file for this particular group of box and folders, for example b1f2-3.csv. 
-        echo 'file_path,thumbnail,width,height,page_no,set_key' > 'subjects/group_F'$f1'B'$f2'.csv'
+        echo 'file_path,thumbnail,width,height,page_no,set_key' > 'subjects/group_b'$f1'f'$f2'.csv'
         # Now we're ready to parse through each folder in this group and add it its images
         # to its csv file.
         # Set a counter that starts with the first folder in the set.
@@ -45,14 +45,19 @@ do
        		printf -v PADDEDBOX "%03d" $f1
        		# We'll define programs as any items that start with p0001.tif.
 			# Look for TIF's that match the pattern. Case-insensitive. Build an array.
-			items="$(find /Volumes/DHLabDrobo/DRA37 -iname 'DRA037-S01-b'$PADDEDBOX'-f'$PADDEDFOLDER'-i*-p0001.tif')"
+			items=()
+			while IFS=  read -r -d $'\0'; do
+				items+=("$REPLY")
+			done < <(find /Volumes/DHLabDrobo/DRA37 -iname 'DRA037-S01-b'$PADDEDBOX'-f'$PADDEDFOLDER'-i*-p0001.tif' -print0)
 			# Make sure the scans actually exist.
 			if [ ! -z "$items" ]
 			then
-				for item in "${items[@]}";
+				for item in "${items[@]}"
 					do 
+						echo 'Working on item '"$item"'...'
 						# Get the base filename of the discovered item, discarding the dir.
 						itemfilename=$(basename "$item")
+						echo 'The base filename is '$itemfilename
 						# Discard the very last part of the discovered item, 'p00001.tif'.
 						itemsearch="${itemfilename%-*}"
 						echo 'Looking for all pages of '$itemsearch
