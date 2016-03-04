@@ -45,7 +45,7 @@ do
        		printf -v PADDEDBOX "%03d" $f1
        		# We'll define programs as any items that start with p0001.tif.
 			# Look for TIF's that match the pattern. Case-insensitive. Build an array.
-			items="$(find /Volumes/DHLabDrobo/DRA37 -iname 'DRA037-S01-b'$PADDEDBOX'-F'$PADDEDFOLDER'-i*-p0001.tif')"
+			items="$(find /Volumes/DHLabDrobo/DRA37 -iname 'DRA037-S01-b'$PADDEDBOX'-f'$PADDEDFOLDER'-i*-p0001.tif')"
 			# Make sure the scans actually exist.
 			if [ ! -z "$items" ]
 			then
@@ -69,7 +69,7 @@ do
 							height=`identify images/$filename.jpg | cut -f 3 -d " " | sed s/.*x//` 
 							echo 'Dimensions are '$width'x'$height
 							PAGEJPG=$(basename "$page" | cut -d. -f1)
-							echo $PAGEJPG.jpg',thumbs/'$PAGEJPG'.jpg,'$width','$height','$PAGECOUNT','$itemsearch >> 'subjects/group_F'$f1'B'$f2'.csv'
+							echo $PAGEJPG.jpg',thumbs/'$PAGEJPG'.jpg,'$width','$height','$PAGECOUNT','$itemsearch >> 'subjects/group_b'$f1'f'$f2'.csv'
 							PAGECOUNT=$[PAGECOUNT + 1]
 
 						done
