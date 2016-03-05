@@ -74,7 +74,7 @@ do
 							height=`identify images/$filename.jpg | cut -f 3 -d " " | sed s/.*x//` 
 							echo 'Dimensions are '$width'x'$height
 							PAGEJPG=$(basename "$page" | cut -d. -f1)
-							echo $PAGEJPG.jpg',thumbs/'$PAGEJPG'.jpg,'$width','$height','$PAGECOUNT','$itemsearch >> 'subjects/group_b'$f1'f'$f2'.csv'
+							echo 'http://hcremacmini01.library.yale.edu/images/'$PAGEJPG.jpg',http://hcremacmini01.library.yale.edu/thumbs/'$PAGEJPG'.jpg,'$width','$height','$PAGECOUNT','$itemsearch >> 'subjects/group_b'$f1'f'$f2'.csv'
 							PAGECOUNT=$[PAGECOUNT + 1]
 
 						done
